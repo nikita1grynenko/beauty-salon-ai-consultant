@@ -1,0 +1,32 @@
+# Основні компоненти LangChain (ядро + ком'юніті)
+langchain
+langchain-community
+
+# OpenAI для GPT і ембеддингів
+openai
+tiktoken
+
+# Векторна база
+chromadb
+
+# Для .env конфігурацій
+python-dotenv
+
+# Робота з PDF (через PyMuPDFLoader)
+pymupdf
+
+# Telegram бот
+pyTelegramBotAPI
+
+# Для зручного розбиття тексту (вже всередині langchain)
+# optional:
+# langchain-openai  # якщо вирішиш перейти на окремі провайдери
+
+# Якщо будеш працювати з веб-інтерфейсом:
+# streamlit
+
+# Якщо потрібно працювати з docx, CSV, Google Sheets — можна додати:
+# pandas
+# python-docx
+# gspread
+# oauth2client

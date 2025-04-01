@@ -19,7 +19,7 @@ def query_bot(user_query: str):
 {context}
 """
 
-    chat = ChatOpenAI(temperature=0.3, model_name="gpt-3.5-turbo")
+    chat = ChatOpenAI(temperature=0.3, model_name="gpt-4o")
     messages = [
         SystemMessage(content=system_prompt),
         HumanMessage(content=user_query)

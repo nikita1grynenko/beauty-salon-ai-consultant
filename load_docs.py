@@ -1,6 +1,11 @@
-from langchain.document_loaders import TextLoader, PyMuPDFLoader
-from langchain.text_splitter import CharacterTextSplitter
 import os
+import sys
+from langchain_community.document_loaders import TextLoader, PyMuPDFLoader
+from langchain.text_splitter import CharacterTextSplitter
+
+# Увімкнути UTF-8 у Windows-терміналі (для кирилиці)
+if sys.platform.startswith('win'):
+    os.system('chcp 65001')
 
 def load_documents(path: str):
     docs = []
@@ -16,7 +21,13 @@ def load_documents(path: str):
             loader = PyMuPDFLoader(full_path)
             docs.extend(loader.load())
 
-        # Можна додати підтримку .md, .docx, .csv
+        # 🔜 Підтримка інших форматів можна додати так:
+        # elif filename.endswith(".csv"):
+        #     ...
+        # elif filename.endswith(".docx"):
+        #     ...
+        # elif filename.endswith(".md"):
+        #     ...
 
     splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     return splitter.split_documents(docs)
