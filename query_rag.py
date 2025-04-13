@@ -4,6 +4,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from dotenv import load_dotenv
 import os
+from logger import log_query
 
 load_dotenv()
 
@@ -32,4 +33,5 @@ if __name__ == "__main__":
         query = input("Клієнт: ")
         if query.lower() in ["вихід", "exit"]:
             break
+        log_query(query, source="query_direct")
         print("Бот:", query_bot(query))

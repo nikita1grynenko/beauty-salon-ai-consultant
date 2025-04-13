@@ -1,0 +1,30 @@
+[
+  {
+    "timestamp": "2025-04-13T18:11:49.530087",
+    "query": "привіт",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-04-13T18:20:58.271771",
+    "query": "ти тут?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-04-13T18:21:25.283216",
+    "query": "скільки коштує манікюр?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-04-13T18:21:48.941001",
+    "query": "скільки коштує манік?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  }
+]
