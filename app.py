@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from query_rag import query_bot
 from build_vectorstore import build_vector_store
 from logger import log_query, get_stats, get_top_queries
+from ragas_evaluator import evaluate_rag_response
 
 load_dotenv()
 
@@ -55,8 +56,15 @@ def main():
         # Логуємо запит
         log_query(user_input, source="app")
         
-        answer = query_bot(user_input)
+        # Отримуємо відповідь та контекст
+        answer, retrieved_contexts = query_bot(user_input)
         print("Бот:", answer, "\n")
+        
+        # Оцінюємо відповідь за допомогою RAGAS
+        try:
+            evaluate_rag_response(user_input, answer, retrieved_contexts)
+        except Exception as e:
+            print(f"Помилка при оцінці RAGAS: {e}")
 
 
 if __name__ == "__main__":

@@ -26,5 +26,61 @@
     "user_id": "497063575",
     "username": "nikitochkaaaa",
     "source": "telegram"
+  },
+  {
+    "timestamp": "2025-05-25T17:10:52.068895",
+    "query": "привіт",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-05-25T17:11:13.872959",
+    "query": "чи є у вас акції?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-05-25T17:37:10.039191",
+    "query": "привіт",
+    "user_id": null,
+    "username": null,
+    "source": "app"
+  },
+  {
+    "timestamp": "2025-05-25T17:38:08.061907",
+    "query": "скільки коштує манік?",
+    "user_id": null,
+    "username": null,
+    "source": "app"
+  },
+  {
+    "timestamp": "2025-05-25T17:40:53.999894",
+    "query": "привіт",
+    "user_id": null,
+    "username": null,
+    "source": "app"
+  },
+  {
+    "timestamp": "2025-05-25T17:42:46.485782",
+    "query": "привіт! скільки коштує зробити манікюр чоловіку?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-05-25T17:43:26.650302",
+    "query": "а жінці?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
+  },
+  {
+    "timestamp": "2025-05-25T17:43:45.555081",
+    "query": "А жінці зробити манікюр скільки коштує?",
+    "user_id": "497063575",
+    "username": "nikitochkaaaa",
+    "source": "telegram"
   }
 ]

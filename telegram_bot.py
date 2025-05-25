@@ -9,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from logger import log_query, get_stats, get_top_queries
 from build_vectorstore import build_vector_store
+from ragas_evaluator import evaluate_rag_response
 
 load_dotenv()
 
@@ -27,10 +28,11 @@ bot = telebot.TeleBot(bot_token)
 # Словник для зберігання станів користувачів у процесі оновлення прайс-листа
 user_states = {}
 
-def query_bot(user_query: str) -> str:
+def query_bot(user_query: str) -> tuple[str, list[str]]:
     db = Chroma(persist_directory="db", embedding_function=OpenAIEmbeddings())
     results = db.similarity_search(user_query, k=3)
     context = "\n---\n".join([doc.page_content for doc in results])
+    retrieved_contexts = [doc.page_content for doc in results]
 
     system_prompt = f"""
 Ти — асистент салону краси «ESTHEIQUE». Відповідай клієнтам тільки на основі наведеного контексту.
@@ -47,7 +49,7 @@ def query_bot(user_query: str) -> str:
         HumanMessage(content=user_query)
     ]
     response = chat.invoke(messages)
-    return response.content
+    return response.content, retrieved_contexts
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
@@ -273,8 +275,15 @@ def handle_message(message):
         log_query(message.text, user_id=user_id, username=username)
         
         # Обробляємо запит
-        answer = query_bot(message.text)
+        answer, retrieved_contexts = query_bot(message.text)
         bot.reply_to(message, answer)
+        
+        # Оцінюємо відповідь за допомогою RAGAS (виводиться в консоль)
+        try:
+            evaluate_rag_response(message.text, answer, retrieved_contexts)
+        except Exception as eval_error:
+            print(f"Помилка при оцінці RAGAS: {eval_error}")
+            
     except Exception as e:
         print("Помилка:", e)
         bot.reply_to(message, "Вибачте, сталася помилка. Спробуйте ще раз пізніше.")

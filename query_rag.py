@@ -12,6 +12,7 @@ def query_bot(user_query: str):
     db = Chroma(persist_directory="db", embedding_function=OpenAIEmbeddings())
     results = db.similarity_search(user_query, k=3)
     context = "\n---\n".join([doc.page_content for doc in results])
+    retrieved_contexts = [doc.page_content for doc in results]
 
     system_prompt = f"""
 Ти — ввічливий асистент салону краси. Використовуй лише контекст нижче для відповіді на запит.
@@ -26,7 +27,7 @@ def query_bot(user_query: str):
         HumanMessage(content=user_query)
     ]
     response = chat(messages)
-    return response.content
+    return response.content, retrieved_contexts
 
 if __name__ == "__main__":
     while True:
@@ -34,4 +35,5 @@ if __name__ == "__main__":
         if query.lower() in ["вихід", "exit"]:
             break
         log_query(query, source="query_direct")
-        print("Бот:", query_bot(query))
+        answer, contexts = query_bot(query)
+        print("Бот:", answer)
