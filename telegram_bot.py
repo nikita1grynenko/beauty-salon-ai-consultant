@@ -61,7 +61,7 @@ def show_id(message):
     user_id = str(message.from_user.id)
     is_admin = user_id in ADMIN_USER_IDS
     
-    admin_status = "✅ Ви адміністратор" if is_admin else "❌ Ви не адміністратор"
+    admin_status = "Ви адміністратор" if is_admin else "Ви не адміністратор"
     bot.reply_to(message, f"Ваш ID: `{user_id}`\n{admin_status}\n\nДоступні ID адміністраторів: `{ADMIN_USER_IDS}`", parse_mode="Markdown")
 
 @bot.message_handler(commands=['addadmin'])

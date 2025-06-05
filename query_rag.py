@@ -1,6 +1,6 @@
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from dotenv import load_dotenv
 import os
@@ -26,7 +26,7 @@ def query_bot(user_query: str):
         SystemMessage(content=system_prompt),
         HumanMessage(content=user_query)
     ]
-    response = chat(messages)
+    response = chat.invoke(messages)
     return response.content, retrieved_contexts
 
 if __name__ == "__main__":
