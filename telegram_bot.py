@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage, SystemMessage
+from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from logger import log_query, get_stats, get_top_queries
 from build_vectorstore import build_vector_store
 from ragas_evaluator import evaluate_rag_response
@@ -28,7 +28,13 @@ bot = telebot.TeleBot(bot_token)
 # Словник для зберігання станів користувачів у процесі оновлення прайс-листа
 user_states = {}
 
-def query_bot(user_query: str) -> tuple[str, list[str]]:
+# Словник для зберігання історії діалогів користувачів
+conversation_history = {}
+
+# Максимальна кількість повідомлень в історії для одного користувача
+MAX_HISTORY_LENGTH = 10
+
+def query_bot(user_query: str, user_id: str = None) -> tuple[str, list[str]]:
     db = Chroma(persist_directory="db", embedding_function=OpenAIEmbeddings())
     results = db.similarity_search(user_query, k=3)
     context = "\n---\n".join([doc.page_content for doc in results])
@@ -44,11 +50,35 @@ def query_bot(user_query: str) -> tuple[str, list[str]]:
 """
 
     chat = ChatOpenAI(temperature=0.2, model_name="gpt-4")
-    messages = [
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=user_query)
-    ]
+    
+    # Формуємо список повідомлень з історією
+    messages = [SystemMessage(content=system_prompt)]
+    
+    # Додаємо історію діалогу, якщо вона є
+    if user_id and user_id in conversation_history:
+        messages.extend(conversation_history[user_id])
+    
+    # Додаємо поточний запит
+    messages.append(HumanMessage(content=user_query))
+    
+    # Отримуємо відповідь
     response = chat.invoke(messages)
+    
+    # Оновлюємо історію діалогу
+    if user_id:
+        if user_id not in conversation_history:
+            conversation_history[user_id] = []
+        
+        # Додаємо нові повідомлення
+        conversation_history[user_id].extend([
+            HumanMessage(content=user_query),
+            AIMessage(content=response.content)
+        ])
+        
+        # Обмежуємо довжину історії
+        if len(conversation_history[user_id]) > MAX_HISTORY_LENGTH * 2:  # *2 бо кожен обмін це 2 повідомлення
+            conversation_history[user_id] = conversation_history[user_id][-MAX_HISTORY_LENGTH * 2:]
+    
     return response.content, retrieved_contexts
 
 @bot.message_handler(commands=['start'])
@@ -259,6 +289,16 @@ def show_stats(message):
     
     bot.reply_to(message, stats_text, parse_mode="Markdown")
 
+@bot.message_handler(commands=['clear'])
+def clear_history(message):
+    """Очищає історію діалогу користувача"""
+    user_id = str(message.from_user.id)
+    if user_id in conversation_history:
+        del conversation_history[user_id]
+        bot.reply_to(message, "✅ Історію діалогу очищено.")
+    else:
+        bot.reply_to(message, "ℹ️ У вас немає активної історії діалогу.")
+
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
     try:
@@ -274,8 +314,8 @@ def handle_message(message):
         username = message.from_user.username or f"user_{user_id}"
         log_query(message.text, user_id=user_id, username=username)
         
-        # Обробляємо запит
-        answer, retrieved_contexts = query_bot(message.text)
+        # Обробляємо запит з передачею user_id для збереження контексту
+        answer, retrieved_contexts = query_bot(message.text, user_id)
         bot.reply_to(message, answer)
         
         # Оцінюємо відповідь за допомогою RAGAS (виводиться в консоль)

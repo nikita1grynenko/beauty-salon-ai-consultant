@@ -21,13 +21,5 @@ def load_documents(path: str):
             loader = PyMuPDFLoader(full_path)
             docs.extend(loader.load())
 
-        # 🔜 Підтримка інших форматів можна додати так:
-        # elif filename.endswith(".csv"):
-        #     ...
-        # elif filename.endswith(".docx"):
-        #     ...
-        # elif filename.endswith(".md"):
-        #     ...
-
     splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     return splitter.split_documents(docs)
